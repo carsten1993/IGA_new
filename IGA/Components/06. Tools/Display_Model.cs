@@ -23,7 +23,7 @@ namespace IGA.Components._06._Tools
             pManager.AddBooleanParameter("True mesh", "btm", "Displays the elements as defined by the knot vectors", GH_ParamAccess.item, false);
             pManager.AddIntegerParameter("Grid", "grid", "Grid dimensions [Csi, Eta, Zeta]", GH_ParamAccess.list);
             pManager.AddNumberParameter("Step", "step", "Step size", GH_ParamAccess.item, 0.01);
-            pManager.AddBooleanParameter("Deformed geometry", "bdg", "Displays the deformed geometry if true", GH_ParamAccess.item, false);
+            pManager.AddBooleanParameter("Deformed geometry", "bdg", "Displays the deformed geometry if true.", GH_ParamAccess.item, false);
             pManager.AddNumberParameter("Scale", "scale", "Scale the deformed geometry", GH_ParamAccess.item, 1);
         }
 
