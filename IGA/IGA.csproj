@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\..\..\AppData\Roaming\Grasshopper\Libraries\</OutputPath>
+    <OutputPath>..\..\..\..\..\AppData\Roaming\Grasshopper\Libraries\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisIgnoreBuiltInRules>false</CodeAnalysisIgnoreBuiltInRules>
@@ -68,11 +68,13 @@
   <ItemGroup>
     <Compile Include="Components\01. Model\Assemble_Model.cs" />
     <Compile Include="Components\01. Model\Create_Box.cs" />
+    <Compile Include="Components\01. Model\Create_Shell_From_Surface.cs" />
     <Compile Include="Components\01. Model\Disassemble_Model.cs" />
     <Compile Include="Components\02. Material\Create_Material.cs" />
     <Compile Include="Components\01. Model\Create_Patch.cs" />
     <Compile Include="Components\03. Restraints\Create_Restraint.cs" />
     <Compile Include="Components\03. Restraints\Disassemble_Restraint.cs" />
+    <Compile Include="Components\04. Loads\Create_Load.cs" />
     <Compile Include="Components\05. Analyze\Analyze_Model.cs" />
     <Compile Include="Components\06. Tools\Display_Model.cs" />
     <Compile Include="Components\07. Test\Curve_Test.cs" />
@@ -95,9 +97,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Components\04. Loads\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
