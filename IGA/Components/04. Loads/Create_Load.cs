@@ -2,32 +2,29 @@
 using System.Collections.Generic;
 
 using Grasshopper.Kernel;
+using Grasshopper.Kernel.Types;
 using Rhino.Geometry;
 
-namespace IGA.Components._03._Restraints
+namespace IGA.Components._04._Loads
 {
-    public class Create_Restraint : GH_Component
+    public class Create_Load : GH_Component
     {
 
-        public Create_Restraint()
-          : base("Create Restraint", "create_restraint",
-              "Applies retraints to surfaces, edges or points",
-              "IGA", "03. Restraints")
+        public Create_Load()
+          : base("Create Load", "create_load",
+              "Applies a load to surfaces",
+              "IGA", "04. Loads")
         {
         }
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
             pManager.AddIntegerParameter("Shape functions/control points", "idLists", "List of shape functions/control points to be restrained", GH_ParamAccess.list);
-            pManager.AddBooleanParameter("Tx", "tX", "Restraining displacement in the X-direction", GH_ParamAccess.item, false);
-            pManager.AddBooleanParameter("Ty", "tY", "Restraining displacement in the Y-direction", GH_ParamAccess.item, false);
-            pManager.AddBooleanParameter("Tz", "tZ", "Restraining displacement in the Z-direction", GH_ParamAccess.item, false);
+            pManager.AddGenericParameter("Load vector", "load", "Loading as a vector [X, Y, Z]", GH_ParamAccess.item);
         }
 
         protected override void RegisterOutputParams(GH_Component.GH_OutputParamManager pManager)
         {
-            pManager.AddGenericParameter("Restraint", "restraint", "Shape functions/control points to be restrained in the X-, Y- and/or Z-direction", GH_ParamAccess.item);
-            pManager.AddTextParameter("Info", "info", "Info about the restraint", GH_ParamAccess.item);
         }
 
         protected override void SolveInstance(IGH_DataAccess DA)
@@ -37,38 +34,21 @@ namespace IGA.Components._03._Restraints
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             List<int> idLists = new List<int>();
-            bool tX = false;
-            bool tY = false;
-            bool tZ = false;
+            GH_Vector load = new GH_Vector();
 
             if (!DA.GetDataList(0, idLists)) return;
-            if (!DA.GetData(1, ref tX)) return;
-            if (!DA.GetData(2, ref tY)) return;
-            if (!DA.GetData(3, ref tZ)) return;
+            if (!DA.GetData(1, ref load)) return;
 
             if (idLists.Count <= 0)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "No nodes are selected");
 
             }
-            if (!tX && !tY && !tZ)
-            {
-                AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "No restraints are selected");
-                return;
-            }
 
             /////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             List<int> id = Sort(idLists);
-            Restraint restraint = new Restraint(id, tX, tY, tZ);
-            string info = restraint.GetRestraintInfo();
-
-            //////////////////////////////////////////////// OUTPUT ////////////////////////////////////////////////
-            ////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            DA.SetData(0, restraint);
-            DA.SetData(1, info);
         }
 
         //////////////////////////////////////////////// METHODS ///////////////////////////////////////////////
@@ -104,6 +84,7 @@ namespace IGA.Components._03._Restraints
             return id;
         }
 
+
         /// <summary>
         /// Provides an Icon for the component.
         /// </summary>
@@ -122,7 +103,7 @@ namespace IGA.Components._03._Restraints
         /// </summary>
         public override Guid ComponentGuid
         {
-            get { return new Guid("962734cb-7c94-4c95-990b-5d532764081f"); }
+            get { return new Guid("0cff849a-eaaa-4cf8-9c48-7314663a4f1a"); }
         }
     }
 }
