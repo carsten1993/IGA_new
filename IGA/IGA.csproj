@@ -93,11 +93,96 @@
     <Compile Include="Components\07. Test\Solid_Test.cs" />
     <Compile Include="Components\07. Test\Stiffness_Matrix_Test.cs" />
     <Compile Include="Components\07. Test\Surface_Test.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\analyze_model.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\assemble_model.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cox_de_Boor.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\create_box.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\create_material.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\create_patch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\create_patch2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\curve_test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\disass_support.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\display_curve.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\display_model.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\diss_asscreate_patch2.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\diss_assemble_model.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\diss_create_material.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\diss_create_patch.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IGA.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\IGA_icon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\jacobi_test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\matrix_comp.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\mesh_surface.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\solid_test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\support.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\surface_test.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\surfacemesh.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\pointload.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
