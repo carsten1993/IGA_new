@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Grasshopper.Kernel;
+using IGA.Class;
 using Rhino.Geometry;
 
 namespace IGA.Components._03._Restraints
@@ -18,7 +19,7 @@ namespace IGA.Components._03._Restraints
 
         protected override void RegisterInputParams(GH_Component.GH_InputParamManager pManager)
         {
-            pManager.AddIntegerParameter("Shape functions/control points", "idLists", "List of shape functions/control points to be restrained", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Surfaces", "surfaces", "List of surfaces to be restrained", GH_ParamAccess.list);
             pManager.AddBooleanParameter("Tx", "tX", "Restraining displacement in the X-direction", GH_ParamAccess.item, false);
             pManager.AddBooleanParameter("Ty", "tY", "Restraining displacement in the Y-direction", GH_ParamAccess.item, false);
             pManager.AddBooleanParameter("Tz", "tZ", "Restraining displacement in the Z-direction", GH_ParamAccess.item, false);
@@ -36,17 +37,17 @@ namespace IGA.Components._03._Restraints
             ///////////////////////////////////////////////// INPUT ////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            List<int> idLists = new List<int>();
+            List<IsoGeoSurface> surfaces = new List<IsoGeoSurface>();
             bool tX = false;
             bool tY = false;
             bool tZ = false;
 
-            if (!DA.GetDataList(0, idLists)) return;
+            if (!DA.GetDataList(0, surfaces)) return;
             if (!DA.GetData(1, ref tX)) return;
             if (!DA.GetData(2, ref tY)) return;
             if (!DA.GetData(3, ref tZ)) return;
 
-            if (idLists.Count <= 0)
+            if (surfaces.Count <= 0)
             {
                 AddRuntimeMessage(GH_RuntimeMessageLevel.Error, "No nodes are selected");
 
@@ -60,7 +61,7 @@ namespace IGA.Components._03._Restraints
             /////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            List<int> id = Sort(idLists);
+            List<int> id = GetIdLists(surfaces);
             Restraint restraint = new Restraint(id, tX, tY, tZ);
             string info = restraint.GetRestraintInfo();
 
@@ -102,6 +103,20 @@ namespace IGA.Components._03._Restraints
             }
 
             return id;
+        }
+
+        List<int> GetIdLists(List<IsoGeoSurface> surfaces)
+        {
+            List<int> lists = new List<int>();
+
+            foreach (IsoGeoSurface s in surfaces)
+            {
+                lists.AddRange(s.GetShapeFunctions());
+            }
+
+            List<int> idLists = Sort(lists);
+
+            return idLists;
         }
 
         /// <summary>
