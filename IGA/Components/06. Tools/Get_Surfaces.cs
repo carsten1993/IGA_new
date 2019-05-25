@@ -201,7 +201,7 @@ namespace IGA
             foreach (int e in elements)
             {
                 List<int> s_IENi = new List<int>();
-                for (int i = 0 - 1; i < IEN[e - 1].Count; i++)
+                for (int i = 0; i < IEN[e - 1].Count; i++)
                 {
                     foreach (int d in surface)
                     {

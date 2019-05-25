@@ -575,9 +575,9 @@ namespace IGA.Components._04._Loads
             double csi3 = pCoord[2];
             double bf3 = BasisFunction(knots3, n3 - 1, p3, csi3);
 
-            for (int j = n2 - p2; j <= p2; j++)
+            for (int j = n2 - p2; j <= n2; j++)
             {
-                for (int i = n1 - p1; i <= p1; i++)
+                for (int i = n1 - p1; i <= n1; i++)
                 {
                     R.Add(BasisFunction(knots1, i - 1, p1, csi1) * BasisFunction(knots2, j - 1, p2, csi2)*bf3);
                     dR1.Add(DerivativeBasisFunction(knots1, i - 1, p1, csi1) * BasisFunction(knots2, j - 1, p2, csi2) * bf3);
@@ -761,6 +761,7 @@ namespace IGA.Components._04._Loads
             Vector<double> P1 = DenseVector.OfArray(new double[3 * nnp]);
             Vector<double> P1e = DenseVector.OfArray(new double[3 * s_nen]);
 
+            int elem = 0;
             foreach (int e in elemList)
             {
                 List<int> nCoord = GetNURBSCoord(INN, IEN, e);
@@ -786,19 +787,19 @@ namespace IGA.Components._04._Loads
                     localI2 = i*3 + 1;
                     localI3 = i*3 + 2;
 
-                    globalI1 = (s_IEN[e - 1][globalFI] - 1) * 3;
-                    globalI2 = (s_IEN[e - 1][globalFI] - 1) * 3 + 1;
-                    globalI3 = (s_IEN[e - 1][globalFI] - 1) * 3 + 2;
+                    globalI1 = (s_IEN[elem][globalFI] - 1) * 3;
+                    globalI2 = (s_IEN[elem][globalFI] - 1) * 3 + 1;
+                    globalI3 = (s_IEN[elem][globalFI] - 1) * 3 + 2;
 
                     P1[globalI1] += P1e[localI1];
                     P1[globalI2] += P1e[localI2];
                     P1[globalI3] += P1e[localI3];                    
                 }
 
+                elem++;
             }
 
             return P1;
-
         }
 
         /// <summary>
