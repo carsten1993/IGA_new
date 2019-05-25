@@ -43,8 +43,8 @@ namespace IGA.Components._01._Model
 
             if (!DA.GetData(0, ref patch)) return;
             if (!DA.GetData(1, ref material)) return;
-            //if (!DA.GetDataList(2, pointLoads)) return;
-            if (!DA.GetDataList(2, restraints)) return;
+            if (!DA.GetDataList(2, pointLoads)) return;
+            if (!DA.GetDataList(3, restraints)) return;
 
             (int nel, int nnp, int nen) = patch.GetSize();
 
