@@ -44,33 +44,40 @@ namespace IGA
 
             (int n, int m, int l) = patch.GetNML();
             (int p, int q, int r) = patch.GetDegrees();
+            (List<List<int>> INN, List<List<int>> IEN) = patch.GetINNIEN();
 
             /////////////////////////////////////////////// FUNCTIONS //////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
             
             List<int> surface1 = patch.GetSurface1();
             List<int> elements1 = GetElementsSuface1(n, m, l, p, q, r);
-            IsoGeoSurface isoGeoSurface1 = new IsoGeoSurface(surface1, elements1, 1);
+            List<List<int>> s_IEN1 = GetSurfaceIEN(surface1, elements1, IEN);
+            IsoGeoSurface isoGeoSurface1 = new IsoGeoSurface(surface1, elements1, s_IEN1, 1);
 
             List<int> surface2 = patch.GetSurface2();
             List<int> elements2 = GetElementsSuface2(n, m, l, p, q, r);
-            IsoGeoSurface isoGeoSurface2 = new IsoGeoSurface(surface2, elements2, 2);
+            List<List<int>> s_IEN2 = GetSurfaceIEN(surface2, elements2, IEN);
+            IsoGeoSurface isoGeoSurface2 = new IsoGeoSurface(surface2, elements2, s_IEN2, 2);
 
             List<int> surface3 = patch.GetSurface3();
             List<int> elements3 = GetElementsSuface3(n, m, l, p, q, r);
-            IsoGeoSurface isoGeoSurface3 = new IsoGeoSurface(surface3, elements3, 3);
+            List<List<int>> s_IEN3 = GetSurfaceIEN(surface3, elements3, IEN);
+            IsoGeoSurface isoGeoSurface3 = new IsoGeoSurface(surface3, elements3, s_IEN3, 3);
 
             List<int> surface4 = patch.GetSurface4();
             List<int> elements4 = GetElementsSuface4(n, m, l, p, q, r);
-            IsoGeoSurface isoGeoSurface4 = new IsoGeoSurface(surface4, elements4, 4);
+            List<List<int>> s_IEN4 = GetSurfaceIEN(surface4, elements4, IEN);
+            IsoGeoSurface isoGeoSurface4 = new IsoGeoSurface(surface4, elements4, s_IEN4, 4);
 
             List<int> surface5 = patch.GetSurface5();
-            List<int> elements5 = GetElementsSuface2(n, m, l, p, q, r);
-            IsoGeoSurface isoGeoSurface5 = new IsoGeoSurface(surface5, elements5, 5);
+            List<int> elements5 = GetElementsSuface5(n, m, l, p, q, r);
+            List<List<int>> s_IEN5 = GetSurfaceIEN(surface5, elements5, IEN);
+            IsoGeoSurface isoGeoSurface5 = new IsoGeoSurface(surface5, elements5, s_IEN5, 5);
 
             List<int> surface6 = patch.GetSurface6();
             List<int> elements6 = GetElementsSuface6(n, m, l, p, q, r);
-            IsoGeoSurface isoGeoSurface6 = new IsoGeoSurface(surface6, elements6, 6);
+            List<List<int>> s_IEN6 = GetSurfaceIEN(surface6, elements6, IEN);
+            IsoGeoSurface isoGeoSurface6 = new IsoGeoSurface(surface6, elements6, s_IEN6, 6);
 
             //////////////////////////////////////////////// OUTPUT ////////////////////////////////////////////////
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -185,6 +192,29 @@ namespace IGA
             }
 
             return elements;
+        }
+
+        List<List<int>> GetSurfaceIEN(List<int> surface, List<int> elements, List<List<int>> IEN)
+        {
+            List<List<int>> s_IEN = new List<List<int>>();
+
+            foreach (int e in elements)
+            {
+                List<int> s_IENi = new List<int>();
+                for (int i = 0 - 1; i < IEN[e - 1].Count; i++)
+                {
+                    foreach (int d in surface)
+                    {
+                        if (IEN[e - 1][i] == d)
+                        {
+                            s_IENi.Add(d);
+                        }
+                    }
+                }
+                s_IEN.Add(s_IENi);
+            }
+
+            return s_IEN;
         }
 
         /// <summary>

@@ -157,7 +157,7 @@ namespace IGA
         {
             List<int> surface = new List<int>();
 
-            for (int i = n * m * (l - 1) ; i <= n * m * l; i++)
+            for (int i = n * m * (l - 1) + 1; i <= n * m * l; i++)
             {
                 surface.Add(i);
             }

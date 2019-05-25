@@ -272,7 +272,7 @@ namespace IGA.Components._04._Loads
 
             return new List<double>() { csi, eta, zeta };
         }
-
+        /*
         (List<List<double>>, List<List<double>>, List<List<double>>) UnivariateBasisFuntion(int p, int q, int r, List<int> nCoord, List<double> pCoord, List<double> knotsCsi, List<double> knotsEta, List<double> knotsZeta)
         {
             List<List<double>> NdN = new List<List<double>>();
@@ -318,7 +318,7 @@ namespace IGA.Components._04._Loads
 
             return (NdN, MdM, LdL);
         }
-
+        
         (List<double>, List<List<double>>) TrivariateBasisFunction(int p, int q, int r, List<List<double>> NdN, List<List<double>> MdM, List<List<double>> LdL)
         {
             List<double> R = new List<double>();
@@ -372,11 +372,11 @@ namespace IGA.Components._04._Loads
                 p2 = 2;
             }
 
-            for (int i = IEN[e].Count - 1, j = 0; i >= 0; i--, j++)
+            for (int i = IEN[e - 1].Count - 1, j = 0; i >= 0; i--, j++)
             {
                 foreach (int d in sf)
                 {
-                    if (IEN[e][i] == d)
+                    if (IEN[e - 1][i] == d)
                     {
                         s_R.Add(R[j]);
                         s_dR_d1.Add(dR_dCsi[p1][j]);
@@ -390,7 +390,7 @@ namespace IGA.Components._04._Loads
 
             return (s_R, s_dR);
         }
-
+        */
         List<List<Point3d>> GetSurfaceControlPoints(List<List<List<Point3d>>> B, int type)
         {
             List<List<Point3d>> s_B = new List<List<Point3d>>();
@@ -480,7 +480,7 @@ namespace IGA.Components._04._Loads
             return s_B;
         }
 
-        (Matrix<double>, Matrix<double>) CreateGradients(int p1, int p2, List<int> nCoord, List<List<Point3d>> s_B, List<List<double>> dR_dCsi, List<double> knots1, List<double> knots2)
+        (Matrix<double>, Matrix<double>) CreateGradients(int p1, int p2, List<int> nCoord, List<List<Point3d>> s_B, List<List<double>> dR_dCsi, List<double> knots1, List<double> knots2, int type)
         {
             Matrix<double> dx_dCsi = DenseMatrix.OfArray(new double[2, 2]);
             Matrix<double> dCsi_dCsiTilde = DenseMatrix.OfArray(new double[2, 2]);
@@ -494,48 +494,117 @@ namespace IGA.Components._04._Loads
             Point3d point;
             int loc = 0;
 
-            for (int j = 0; j <= p2; j++)
+            if (type == 1 || type == 6)
             {
-                for (int i = 0; i <= p1; i++)
+                for (int j = 0; j <= p2; j++)
                 {
-                    point = s_B[n2 - p2 + j - 1][n1 - p1 + i - 1];
-                    List<double> pointList = new List<double>() { point.X, point.Y};
-
-                    for (int a = 0; a < 2; a++)
+                    for (int i = 0; i <= p1; i++)
                     {
-                        for (int b = 0; b < 2; b++)
+                        point = s_B[n2 - p2 + j - 1][n1 - p1 + i - 1];
+                        List<double> pointList = new List<double>() { point.X, point.Y };
+
+                        for (int a = 0; a < 2; a++)
                         {
-                            dx_dCsi[a, b] += dR_dCsi[b][loc] * pointList[a];
+                            for (int b = 0; b < 2; b++)
+                            {
+                                dx_dCsi[a, b] += dR_dCsi[b][loc] * pointList[a];
+                            }
                         }
+                        loc++;
                     }
-                    loc++;
+                }
+            }
+            else if (type == 2 || type == 4)
+            {
+                for (int j = 0; j <= p2; j++)
+                {
+                    for (int i = 0; i <= p1; i++)
+                    {
+                        point = s_B[n2 - p2 + j - 1][n1 - p1 + i - 1];
+                        List<double> pointList = new List<double>() { point.X, point.Z };
+
+                        for (int a = 0; a < 2; a++)
+                        {
+                            for (int b = 0; b < 2; b++)
+                            {
+                                dx_dCsi[a, b] += dR_dCsi[b][loc] * pointList[a];
+                            }
+                        }
+                        loc++;
+                    }
+                }
+            }
+            else
+            {
+                for (int j = 0; j <= p2; j++)
+                {
+                    for (int i = 0; i <= p1; i++)
+                    {
+                        point = s_B[n2 - p2 + j - 1][n1 - p1 + i - 1];
+                        List<double> pointList = new List<double>() { point.Y, point.Z };
+
+                        for (int a = 0; a < 2; a++)
+                        {
+                            for (int b = 0; b < 2; b++)
+                            {
+                                dx_dCsi[a, b] += dR_dCsi[b][loc] * pointList[a];
+                            }
+                        }
+                        loc++;
+                    }
                 }
             }
 
-            return (dx_dCsi, dCsi_dCsiTilde);
+
+
+                return (dx_dCsi, dCsi_dCsiTilde);
         }
 
-        (List<double>, double) GetShapeFunctions(int p, int q, int r, int p1, int p2, List<int> nCoord, List<double> pCoord, List<int> n1Coord, List<double> knotsCsi, List<double> knotsEta, List<double> knotsZeta, List<double> knots1, List<double> knots2, List<List<Point3d>> s_B, int e, List<List<int>> IEN, List<int> sf, int type)
+        (List<double>, List<List<double>>) SurfaceTrivariateBasisFuntion(int p1, int p2, int p3, List<int> n1Coord, List<double> pCoord, List<double> knots1, List<double> knots2, List<double> knots3)
         {
-            (List<List<double>> NdN, List<List<double>> MdM, List<List<double>> LdL) = UnivariateBasisFuntion(p, q, r, nCoord, pCoord, knotsCsi, knotsEta, knotsZeta);
-            (List<double> R, List<List<double>> dR_dCsi) = TrivariateBasisFunction(p, q, r, NdN, MdM, LdL);
-            (List<double> s_R, List<List<double>> s_dR_dCsi) = GetSurfaceTrivariateTrivariateBasisFunction(R, dR_dCsi, e, IEN, sf, type);
-            (Matrix<double> s_dx_dCsi, Matrix<double> s_dCsi_dCsiTilde) = CreateGradients(p1, p2, n1Coord, s_B, dR_dCsi, knots1, knots2);
+            List<double> R = new List<double>();
+            List<List<double>> dR = new List<List<double>>();
+            List<double> dR1 = new List<double>();
+            List<double> dR2 = new List<double>();
+
+            int n1 = n1Coord[0];
+            double csi1 = pCoord[0];
+            int n2 = n1Coord[1];
+            double csi2 = pCoord[1];
+            int n3 = n1Coord[2];
+            double csi3 = pCoord[2];
+            double bf3 = BasisFunction(knots3, n3 - 1, p3, csi3);
+
+            for (int j = n2 - p2; j <= p2; j++)
+            {
+                for (int i = n1 - p1; i <= p1; i++)
+                {
+                    R.Add(BasisFunction(knots1, i - 1, p1, csi1) * BasisFunction(knots2, j - 1, p2, csi2)*bf3);
+                    dR1.Add(DerivativeBasisFunction(knots1, i - 1, p1, csi1) * BasisFunction(knots2, j - 1, p2, csi2) * bf3);
+                    dR2.Add(BasisFunction(knots1, i - 1, p1, csi1) * DerivativeBasisFunction(knots2, j - 1, p2, csi2) * bf3);
+                }
+            }
+            dR.Add(dR1);
+            dR.Add(dR2);
+
+            return (R, dR);
+        }
+
+        (List<double>, double) GetShapeFunctions(int p1, int p2, int p3, List<int> n1Coord, List<double> p1Coord, List<double> knots1, List<double> knots2, List<double> knots3, List<List<Point3d>> s_B, int type)
+        {
+            (List<double> s_R, List<List<double>> s_dR_dCsi) = SurfaceTrivariateBasisFuntion(p1, p2, p3, n1Coord, p1Coord, knots1, knots2, knots3);
+            (Matrix<double> s_dx_dCsi, Matrix<double> s_dCsi_dCsiTilde) = CreateGradients(p1, p2, n1Coord, s_B, s_dR_dCsi, knots1, knots2, type);
             Matrix<double> s_J_mat = s_dx_dCsi * s_dCsi_dCsiTilde;
             double s_J = s_J_mat.Determinant();
 
             return (s_R, s_J);
         }
 
-
-
-
-
-        Vector<double> CreateGaussPointElementLoadVector(List<double> R, int nes, GH_Vector load, double modJ)
+        Vector<double> CreateGaussPointElementLoadVector(List<double> R, int s_nen, GH_Vector load, double modJ)
         {
-            Vector<double> Pgpe = DenseVector.OfArray(new double[3 * nes]);
+            Vector<double> Pgpe = DenseVector.OfArray(new double[3 * s_nen]);
 
-            for (int i = 0; i < nes; i++)
+            for (int i = 0; i < s_nen; i++)
             {
                 Pgpe[i * 3] = load.Value.X * R[i] * modJ;
                 Pgpe[i * 3 + 1] = load.Value.Y * R[i] * modJ;
@@ -545,36 +614,72 @@ namespace IGA.Components._04._Loads
             return Pgpe;
         }
 
-        Vector<double> CreateElementExternalLoadVector(int p, int q, int r, int nes, List<int> nCoord, List<double> knotsCsi, List<double> knotsEta, List<double> knotsZeta, List<List<Point3d>> s_B, int e, List<List<int>> IEN, List<int> sf, int type, GH_Vector load)
+        Vector<double> CreateElementExternalLoadVector(int p, int q, int r, int n, int m, int l, int s_nen, List<int> nCoord, List<double> knotsCsi, List<double> knotsEta, List<double> knotsZeta, List<List<Point3d>> s_B, GH_Vector load, int type)
         {
-            Vector<double> P1e = DenseVector.OfArray(new double[3 * nes]);
+            Vector<double> P1e = DenseVector.OfArray(new double[3 * s_nen]);
 
-            int p1, p2;
-            List<double> knots1, knots2;
+            int p1, p2, p3;
+            List<double> knots1, knots2, knots3;
             List<int> n1Coord;
-            if (type == 1 || type == 6)
+            if (type == 1)
             {
                 p1 = p;                
                 p2 = q;
+                p3 = r;
                 knots1 = knotsCsi;
                 knots2 = knotsEta;
-                n1Coord = new List<int>() { nCoord[0], nCoord[1] };
+                knots3 = knotsZeta;
+                n1Coord = new List<int>() { nCoord[0], nCoord[1], 1 };
             }
-            else if (type == 2 || type == 4)
+            else if (type == 2)
             {
                 p1 = p;
                 p2 = r;
+                p3 = q;
                 knots1 = knotsCsi;
                 knots2 = knotsZeta;
-                n1Coord = new List<int>() { nCoord[0], nCoord[2] };
+                knots3 = knotsEta;
+                n1Coord = new List<int>() { nCoord[0], 1, nCoord[2] };
             }
-            else
+            else if (type == 3)
             {
                 p1 = q;
                 p2 = r;
+                p3 = p;
                 knots1 = knotsEta;
                 knots2 = knotsZeta;
-                n1Coord = new List<int>() { nCoord[01], nCoord[2] };
+                knots3 = knotsCsi;
+                n1Coord = new List<int>() { n, nCoord[1], nCoord[2] };
+            }
+            else if (type == 4)
+            {
+                p1 = p;
+                p2 = r;
+                p3 = q;
+                knots1 = knotsCsi;
+                knots2 = knotsZeta;
+                knots3 = knotsEta;
+                n1Coord = new List<int>() { nCoord[0], m, nCoord[2] };
+            }
+            else if (type == 5)
+            {
+                p1 = q;
+                p2 = r;
+                p3 = p;
+                knots1 = knotsEta;
+                knots2 = knotsZeta;
+                knots3 = knotsCsi;
+                n1Coord = new List<int>() { 1, nCoord[1], nCoord[2] };
+            }
+            else
+            {
+                p1 = p;
+                p2 = q;
+                p3 = r;
+                knots1 = knotsCsi;
+                knots2 = knotsEta;
+                knots3 = knotsZeta;
+                n1Coord = new List<int>() { nCoord[0], nCoord[1], l };
             }
 
             int ngp1 = p1 + 1;
@@ -625,10 +730,10 @@ namespace IGA.Components._04._Loads
                     }
 
                     
-                    List<double> pCoord = GetParametricCoord(nCoord, knotsCsi, knotsEta, knotsZeta, csiTilde);
-                    (List<double> R, double J) = GetShapeFunctions(p, q, r, p1, p2, nCoord, pCoord, n1Coord, knotsCsi, knotsEta, knotsZeta, knots1, knots2, s_B, e, IEN, sf, type);
+                    List<double> p1Coord = GetParametricCoord(nCoord, knotsCsi, knotsEta, knotsZeta, csiTilde);
+                    (List<double> R, double J) = GetShapeFunctions(p1, p2, p3, n1Coord, p1Coord, knots1, knots2, knots3, s_B, type);
                     double modJ = J * weight1[i] * weight2[j];
-                    P1e += CreateGaussPointElementLoadVector(R, nes, load, modJ);
+                    P1e += CreateGaussPointElementLoadVector(R, s_nen, load, modJ);
                 }
             }           
 
@@ -645,19 +750,21 @@ namespace IGA.Components._04._Loads
             (List<List<int>> INN, List<List<int>> IEN) = patch.GetINNIEN();
 
             List<int> sf = surface.GetShapeFunctions();
-            int nes = sf.Count;
+            int s_nnp = sf.Count;
             List<int> elemList = surface.GetElements();
+            List<List<int>> s_IEN = surface.GetIEN();
+            int s_nen = s_IEN[0].Count;
             int type = surface.GetSurface();
 
             List<List<Point3d>> s_B = GetSurfaceControlPoints(B, type);
 
             Vector<double> P1 = DenseVector.OfArray(new double[3 * nnp]);
-            Vector<double> P1e = DenseVector.OfArray(new double[3 * nes]);
+            Vector<double> P1e = DenseVector.OfArray(new double[3 * s_nen]);
 
             foreach (int e in elemList)
             {
                 List<int> nCoord = GetNURBSCoord(INN, IEN, e);
-                /*
+                
                 int ni = nCoord[0];
                 int nj = nCoord[1];
                 int nk = nCoord[2];
@@ -666,22 +773,22 @@ namespace IGA.Components._04._Loads
                 if (knotsCsi[ni] == knotsCsi[ni - 1] || knotsEta[nj] == knotsEta[nj - 1] || knotsZeta[nk] == knotsZeta[nk - 1])
                 {
                     continue;
-                }*/
+                }
 
-                P1e = CreateElementExternalLoadVector(p, q, r, nes, nCoord, knotsCsi, knotsEta, knotsZeta, s_B, e, IEN, sf, type, load);
+                P1e = CreateElementExternalLoadVector(p, q, r, n, m, l, s_nen, nCoord, knotsCsi, knotsEta, knotsZeta, s_B, load, type);
 
                 int localI1, localI2, localI3, globalI1, globalI2, globalI3, globalFI;
-                for (int i = 0; i < nes; i ++)
+                for (int i = 0; i < s_nen; i ++)
                 {
-                    globalFI = sf[0];
+                    globalFI = s_nen - 1 - i; 
 
                     localI1 = i*3;
                     localI2 = i*3 + 1;
                     localI3 = i*3 + 2;
 
-                    globalI1 = (IEN[e - 1][globalFI] - 1) * 3;
-                    globalI2 = (IEN[e - 1][globalFI] - 1) * 3 + 1;
-                    globalI3 = (IEN[e - 1][globalFI] - 1) * 3 + 2;
+                    globalI1 = (s_IEN[e - 1][globalFI] - 1) * 3;
+                    globalI2 = (s_IEN[e - 1][globalFI] - 1) * 3 + 1;
+                    globalI3 = (s_IEN[e - 1][globalFI] - 1) * 3 + 2;
 
                     P1[globalI1] += P1e[localI1];
                     P1[globalI2] += P1e[localI2];
