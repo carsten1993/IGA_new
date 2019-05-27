@@ -22,7 +22,6 @@ namespace IGA
         public Patch(List<List<List<Point3d>>> _B, List<double> _knotsCsi, List<double> _knotsEta, List<double> _knotsZeta, int _p, int _q, int _r, List<List<int>> _INN, List<List<int>> _IEN)
         {
             B = _B;
-            newB = _B;
             knotsCsi = _knotsCsi;
             knotsEta = _knotsEta;
             knotsZeta = _knotsZeta;
@@ -37,6 +36,24 @@ namespace IGA
             nen = (p + 1) * (q + 1) * (r + 1);        
             INN = _INN;
             IEN = _IEN;
+
+            newB = new List<List<List<Point3d>>>();
+            Point3d point;
+            for (int k = 0; k < l; k++)
+            {
+                List<List<Point3d>> nBij = new List<List<Point3d>>();
+                for (int j = 0; j < m; j++)
+                {
+                    List<Point3d> nBi = new List<Point3d>();
+                    for (int i = 0; i < n; i++)
+                    {
+                        point = B[k][j][i];
+                        nBi.Add(point);
+                    }
+                    nBij.Add(nBi);
+                }
+                newB.Add(nBij);
+            }
         }
 
         public List<List<List<Point3d>>> GetControlPoints() { return B; }
