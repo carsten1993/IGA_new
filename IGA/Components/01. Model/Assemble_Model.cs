@@ -506,9 +506,9 @@ namespace IGA.Components._01._Model
             Matrix<double> Ke = DenseMatrix.OfArray(new double[3 * nen, 3 * nen]);
             Vector<double> Pe = DenseVector.OfArray(new double[3 * nen]);
 
-            int ngpCsi = p + 1;
-            int ngpEta = q + 1;
-            int ngpZeta = r + 1;
+            int ngpCsi = 2; // p + 1;
+            int ngpEta = 2; //q + 1;
+            int ngpZeta = 2; //r + 1;
             (List<double> csiTildeCoord, List<double> weightCsi) = Gauss(ngpCsi);
             (List<double> etaTildeCoord, List<double> weightEta) = Gauss(ngpEta);
             (List<double> zetaTildeCoord, List<double> weightZeta) = Gauss(ngpZeta);

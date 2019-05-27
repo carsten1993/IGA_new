@@ -33,6 +33,9 @@ namespace IGA
             patch = _patch;
             material = _material;
             restraints = _restraints;
+
+            (int nel, int nnp, int nen) = patch.GetSize();
+            d = DenseVector.OfArray(new double[3 * nnp]);
         }
 
         public Patch GetPatch() { return patch; }
