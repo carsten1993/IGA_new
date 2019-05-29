@@ -146,7 +146,7 @@ namespace IGA.Components._01._Model
                     return (list1, list2);
 
                 case 2:
-                    double C = 0.5773502691;
+                    double C = 0.5773502692;
                     list1.Add(-C);
                     list1.Add(C);
                     list2.Add(1.0);
