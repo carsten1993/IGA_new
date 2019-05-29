@@ -66,6 +66,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Class\IsoGeoSurface.cs" />
     <Compile Include="Components\01. Model\Assemble_Model.cs" />
     <Compile Include="Components\01. Model\Create_Box.cs" />
     <Compile Include="Components\01. Model\Create_Shell_From_Surface.cs" />

@@ -22,7 +22,7 @@ namespace IGA.Components._01._Model
         {
             pManager.AddGenericParameter("Patch", "patch", "Patch", GH_ParamAccess.item);
             pManager.AddGenericParameter("Material", "material", "Material properties", GH_ParamAccess.item);
-            //pManager.AddGenericParameter("Loads", "loads", "External loads", GH_ParamAccess.list);
+            pManager.AddGenericParameter("Loads", "loads", "External loads", GH_ParamAccess.list);
             pManager.AddGenericParameter("Restraints", "restraints", "Nodal restraints", GH_ParamAccess.list);
         }
 
@@ -38,13 +38,13 @@ namespace IGA.Components._01._Model
 
             Patch patch = new Patch();
             Material material = new Material();
-            //List<PointLoad> pointLoads = new List<PointLoad>();
+            List<Vector<double>> pointLoads = new List<Vector<double>>();
             List<Restraint> restraints = new List<Restraint>();
 
             if (!DA.GetData(0, ref patch)) return;
             if (!DA.GetData(1, ref material)) return;
-            //if (!DA.GetDataList(2, pointLoads)) return;
-            if (!DA.GetDataList(2, restraints)) return;
+            if (!DA.GetDataList(2, pointLoads)) return;
+            if (!DA.GetDataList(3, restraints)) return;
 
             (int nel, int nnp, int nen) = patch.GetSize();
 
@@ -52,7 +52,7 @@ namespace IGA.Components._01._Model
             ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
             List<List<int>> res = CreateRestraintList(restraints);
-            Vector<double> P1 = CreateExternalLoadVector(patch);
+            Vector<double> P1 = CreateExternalLoadVector(pointLoads, nnp);
             (Matrix<double> K_full, Vector<double> P0) = CreateStiffnessMatrixLoadVector(patch, material);
 
             //Model model = new Model(mesh, material, pointLoads, restraints);
@@ -119,19 +119,16 @@ namespace IGA.Components._01._Model
             return res;
         }
 
-        Vector<double> CreateExternalLoadVector(Patch patch)
+        Vector<double> CreateExternalLoadVector(List<Vector<double>> pointLoads, int nnp)
         {
-            (int n, int m, int l) = patch.GetNML();
-            (int nel, int nnp, int nen) = patch.GetSize();
-            Vector<double> P = DenseVector.OfArray(new double[3 * nnp]);
-            List<int> p = patch.GetSurface3();
-            /*
-            foreach(int d in p)
+            Vector<double> P1 = DenseVector.OfArray(new double[3 * nnp]);
+            
+            foreach(Vector<double> p in pointLoads)
             {
-                P[(d - 1) * 3 + 2] = -1000;
-            }*/
+                P1 += p;
+            }
 
-            return P;
+            return P1;
         }
        
         (List<double>, List<double>) Gauss(int ngp)
@@ -149,7 +146,7 @@ namespace IGA.Components._01._Model
                     return (list1, list2);
 
                 case 2:
-                    double C = 0.5773502691;
+                    double C = 0.5773502692;
                     list1.Add(-C);
                     list1.Add(C);
                     list2.Add(1.0);
