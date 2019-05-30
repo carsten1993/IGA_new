@@ -12,7 +12,7 @@ namespace IGA
     {
         public Create_Material()
           : base("Create Material", "create_material",
-              "Returns a material, given the name, Young's modulus, Poisson's ratio and densityof the material",
+              "Returns a material, given the name, Young's modulus, Poisson's ratio and density of the material",
               "IGA", "02. Material")
         {
         }
